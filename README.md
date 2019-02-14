@@ -1,0 +1,1 @@
+* 执行完ansible后，还需要链接到服务器运行：```rb-site install /var/www/reviews.example.com``` 命令，手动输入站点信息。rm -
