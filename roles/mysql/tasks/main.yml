@@ -49,14 +49,14 @@
     host: '%'
     password: "{{mysql_password}}"
     priv: '*.*:ALL'
-  when: remote == 'yes'
+  when: remote 
 
 - name: enable remote access II
   lineinfile: 
     path: /etc/mysql/mysql.conf.d/mysqld.cnf
     regexp: 'bind-address    = 127.0.0.1'
     line: 'bind-address    = 0.0.0.0'
-  when: remote == 'yes'
+  when: remote 
   notify: restart MySQL
 
 - name: Obtain MySQL root;'s password

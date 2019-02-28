@@ -18,7 +18,7 @@ set ConfirmAdminPassword admin
 set EMail admin@admin.com
 set CollectData n
 
-spawn rb-site install /data/wwwroot/reviews.example.com
+spawn rb-site install /data/wwwroot/reviewboard
 expect {
     "Domain Name" {send "$DomainName\r";exp_continue }
     "Root Path" {send "\r";exp_continue }
