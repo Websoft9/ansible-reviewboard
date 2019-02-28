@@ -1,32 +1,37 @@
-# - name: create expect script
-#   file:
-#     src: reiviewboard.exp
-#     dest: /tmp
-#     owner: root
-#     group: root
-#     mode: 0755
+- name: create expect script
+  copy:
+    src: reviewboard.exp
+    dest: /tmp/reviewboard.exp
+    owner: root
+    group: root
+    mode: 0755
 
-# - name: create reiviewboard site
-#   shell: |
-#     expect /tmp/reviewboard.exp
-#     rm -f /tmp/reviewboard.exp
+- name: Create reviewboard site
+  shell: expect /tmp/reviewboard.exp
 
-# - name: copy reviewboard's configuration file
-#   copy:
-#     src: /data/wwwroot/reviews.example.com/conf/apache-wsgi.conf
-#     dest: /etc/apache2/sites-available/000-default.conf
-#     remote_src: yes
+- name: delete reviewboard.exp
+  file:
+    path: /tmp/reviewboard.exp
+    state: absent
 
-# - name: copy reviewboard's configuration file -2
-#   lineinfile:
-#     path: /data/wwwroot/reviews.example.com/conf/settings_local.py
-#     regexp: '^ALLOWED_HOSTS'
-#     line: "ALLOWED_HOSTS = ['*']'"
-#     state: present
+
+- name: copy reviewboard's configuration file
+  copy:
+    src: /data/wwwroot/reviews.example.com/conf/apache-wsgi.conf
+    dest: /etc/apache2/sites-available/000-default.conf
+    remote_src: yes
+
+- name: copy reviewboard's configuration file -2
+  lineinfile:
+    path: /data/wwwroot/reviews.example.com/conf/settings_local.py
+    regexp: '^ALLOWED_HOSTS'
+    line: "ALLOWED_HOSTS = ['*']'"
+    state: present
  
 - name: Change directory's permission
   shell: |
-    chown -R www-data. /data/wwwroot
+    chown -R www-data /data/wwwroot/reviews.example.com/htdocs/media/uploaded
+    chown -R www-data /data/wwwroot/reviews.example.com/data
     find /data/wwwroot -type d -exec chmod 750 {} \;
     find /data/wwwroot -type f -exec chmod 640 {} \;
   notify: restart apache

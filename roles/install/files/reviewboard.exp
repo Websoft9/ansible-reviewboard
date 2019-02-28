@@ -5,8 +5,7 @@ set timeout 30
 #    exit 1
 #}
 
-set DomainName www.example.com
-set RootPath 
+set DomainName www.example.com 
 set DatabaseType 1
 set DatabaseName reviewboard
 set DatabaseUsername root
