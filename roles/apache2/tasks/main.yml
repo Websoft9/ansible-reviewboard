@@ -9,6 +9,6 @@
   file: 
     path: /data/wwwroot
     state: directory
-    owner: www-data
-    group: www-data
-    mode: 0750
+    owner: root
+    group: root
+    mode: 0755
