@@ -17,21 +17,62 @@
 
 - name: copy reviewboard's configuration file
   copy:
-    src: /data/wwwroot/reviews.example.com/conf/apache-wsgi.conf
-    dest: /etc/apache2/sites-available/000-default.conf
-    remote_src: yes
+    src: 000-default.conf
+    dest: /etc/apache2/sites-available
+  notify: restart apache2
+
+- name: Change owner and group
+  file:
+    path: /data/wwwroot/
+    owner: www-data
+    group: www-data
+    recurse: yes
+    state: directory
 
 - name: copy reviewboard's configuration file -2
   lineinfile:
-    path: /data/wwwroot/reviews.example.com/conf/settings_local.py
+    path: /data/wwwroot/reviewboard/conf/settings_local.py
     regexp: '^ALLOWED_HOSTS'
-    line: "ALLOWED_HOSTS = ['*']'"
+    line: "ALLOWED_HOSTS = ['*']"
     state: present
  
+- name: Setting rc.local
+  file:
+    path: /etc/rc.local
+    state: touch
+    mode: 0750
+
+- name: Write rc.local
+  shell: echo "#!/bin/bash" > /etc/rc.local
+
+- name: restart rc.local
+  service: name=rc.local state=restarted enabled=yes
+
+
+- name: Databases Random Password
+  copy: 
+    src: init.sh
+    dest: /root/
+    mode: 0750
+
+- name: Setting Startup
+  lineinfile:
+    path: /etc/rc.local
+    regexp: '/root/init.sh'
+    line: '/root/init.sh'
+    mode: 0750
+
+
 - name: Change directory's permission
   shell: |
     chown -R www-data /data/wwwroot/reviews.example.com/htdocs/media/uploaded
     chown -R www-data /data/wwwroot/reviews.example.com/data
+<<<<<<< HEAD
     find /data -type d -exec chmod 750 {} \;
     find /data -type f -exec chmod 640 {} \;
   notify: restart apache
+=======
+    find /data/wwwroot -type d -exec chmod 750 {} \;
+    find /data/wwwroot -type f -exec chmod 640 {} \;
+  notify: restart apache2
+>>>>>>> 92a0151b508e9a502ee3e0f5da2aee7a895f2016
