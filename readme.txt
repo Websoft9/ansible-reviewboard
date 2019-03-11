@@ -17,6 +17,9 @@ Platform. It combines leading open source projects, such as MySQL,Apache...
 Websoft9 Reviewborad stack ships with the following software versions:
 
 ********
+
+--- main components ---
+
    - Apache 2.4.29 with mode_wsgi
    - MySQL 5.7.25
    - Python 2.7.15rc1
