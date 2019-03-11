@@ -22,7 +22,8 @@ Websoft9 Reviewborad stack ships with the following software versions:
 
    - Apache 2.4.29 with mode_wsgi
    - MySQL 5.7.25
-   - Python 2.7.15rc1
+   - Python 3.6.7
+   - Django 1.6.11
    - memcached 1.5.6
    - RevieBoard Version 3.0.13
 
