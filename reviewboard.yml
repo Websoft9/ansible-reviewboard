@@ -1,6 +1,6 @@
 ---
 - name: reviewboard
-  hosts: all
+  hosts: reviewboard
   become: yes
   become_method: sudo
   become_user: root
