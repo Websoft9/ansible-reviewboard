@@ -68,9 +68,9 @@
       login_password: "{{mysql_password}}"
 
 - name: Write Databases Password
-  shell: echo 'Dtabases root Password:'{{mysql_password}}  > /root/password.txt
+  shell: echo 'Dtabases root Password:'{{mysql_password}}  > /credentials/password.txt
 
 - name: Password Text File Permission
   file:
-    path: /root/password.txt
+    path: /credentials/password.txt
     mode: 0640
