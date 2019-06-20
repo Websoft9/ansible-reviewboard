@@ -1,9 +1,9 @@
 ---
 - name: reviewboard
-  hosts: reviewboard
+  hosts: server
   become: yes
   become_method: sudo
-  become_user: root
+  remote_user: '{{admin_username}}'
 
   roles:
     - { role: common , tags: "common"} 
