@@ -6,7 +6,7 @@ new_password=$(</dev/urandom tr -dc '12345!@#$%qwertQWERTasdfgASDFGzxcvbZXCVB' |
 systemctl restart mysql
 mysqladmin -uroot -p${old_password}  password $new_password
 
-echo -e 'MySQL username:root\nDatabases root Password:'$new_password  > /credentials/password.txt
+echo -e 'MySQL username:root\nMySQL Password:'$new_password  > /credentials/password.txt
  
 sed -i "s/123456/$new_password/" /data/wwwroot/reviewboard/conf/settings_local.py
 
