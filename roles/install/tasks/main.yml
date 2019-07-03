@@ -19,7 +19,12 @@
   copy:
     src: 000-default.conf
     dest: /etc/apache2/sites-available
-  notify: restart apache2
+
+- name: restart apache2
+  service:
+    name: apache2
+    state: restarted
+    enabled: yes
 
 - name: Change owner and group
   file:
@@ -69,4 +74,4 @@
     chown -R www-data /data/wwwroot/reviewboard/data
     find /data/wwwroot/ -type d -exec chmod 750 {} \;
     find /data/wwwroot/ -type f -exec chmod 640 {} \;
-  notify: restart apache2
+
