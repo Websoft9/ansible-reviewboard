@@ -12,4 +12,3 @@
     - { role: mysql, tags: "mysql" }
     - { role: reviewboard, tags: "reviewboard" }
     - { role: install, tags: "install"}
-    - { role: end, tags: "end"}
