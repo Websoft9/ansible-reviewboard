@@ -1,2 +1,0 @@
-[reviewboard]
-192.168.0.111  ansible_ssh_user=ubuntu  ansible_ssh_pass=qwer1234 ansible_sudo_pass=qwer1234

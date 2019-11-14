@@ -18,7 +18,7 @@
   
 
   roles:
-    # - { role: common , tags: "common"} 
-    # - { role: apache, tags: "apache" }
-    # - { role: mysql, tags: "mysql" }
+    - { role: common , tags: "common"} 
+    - { role: apache, tags: "apache" }
+    - { role: mysql, tags: "mysql" }
     - { role: reviewboard, tags: "reviewboard" }
