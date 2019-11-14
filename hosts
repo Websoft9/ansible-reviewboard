@@ -1,2 +1,2 @@
 [reviewboard]
-159.138.85.10  ansible_ssh_user=root  ansible_ssh_pass=Qwer1234  
+192.168.0.111  ansible_ssh_user=ubuntu  ansible_ssh_pass=qwer1234 ansible_sudo_pass=qwer1234
