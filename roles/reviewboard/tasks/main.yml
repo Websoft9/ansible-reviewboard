@@ -1,3 +1,8 @@
+- name: Install 
+  apt:
+    name: [python-pip, libapache2-mod-wsgi]
+    state: latest
+
 - name: Install dependence, memcached
   apt:
     name: [build-essential, python-dev, libffi-dev, libssl-dev, patch, memcached, libmysqlclient-dev]
@@ -54,3 +59,82 @@
     state: present
     login_user: root
     login_password: 123456
+
+
+- name: create expect script
+  copy:
+    src: reviewboard.exp
+    dest: /tmp/reviewboard.exp
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Create reviewboard site
+  shell: expect /tmp/reviewboard.exp
+
+- name: delete reviewboard.exp
+  file:
+    path: /tmp/reviewboard.exp
+    state: absent
+
+
+- name: copy reviewboard's configuration file
+  copy:
+    src: 000-default.conf
+    dest: /etc/apache2/sites-available
+
+- name: restart apache2
+  service:
+    name: apache2
+    state: restarted
+    enabled: yes
+
+- name: Change owner and group
+  file:
+    path: /data/wwwroot/
+    owner: www-data
+    group: www-data
+    recurse: yes
+    state: directory
+
+- name: copy reviewboard's configuration file -2
+  lineinfile:
+    path: /data/wwwroot/reviewboard/conf/settings_local.py
+    regexp: '^ALLOWED_HOSTS'
+    line: "ALLOWED_HOSTS = ['*']"
+    state: present
+ 
+- name: Setting rc.local
+  file:
+    path: /etc/rc.local
+    state: touch
+    mode: 0750
+
+- name: Write rc.local
+  shell: echo "#!/bin/bash" > /etc/rc.local
+
+- name: restart rc.local
+  service: name=rc.local state=restarted enabled=yes
+
+
+- name: Databases Random Password
+  copy: 
+    src: init.sh
+    dest: /root/
+    mode: 0750
+
+- name: Setting Startup
+  lineinfile:
+    path: /etc/rc.local
+    regexp: '/root/init.sh'
+    line: '/root/init.sh'
+    mode: 0750
+
+
+- name: Change directory's permission
+  shell: |
+    chown -R www-data /data/wwwroot/reviewboard/htdocs/media/uploaded
+    chown -R www-data /data/wwwroot/reviewboard/data
+    find /data/wwwroot/ -type d -exec chmod 750 {} \;
+    find /data/wwwroot/ -type f -exec chmod 640 {} \;
+
