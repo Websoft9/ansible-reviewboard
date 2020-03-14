@@ -57,16 +57,8 @@
     name: [subversion, python-svn]
     state: latest
 
-- name: Create database
-  mysql_db:
-    name: reviewboard
-    state: present
-    login_user: root
-    login_password: 123456
-
-
 - name: create expect script
-  copy:
+  template:
     src: reviewboard.exp
     dest: /tmp/reviewboard.exp
     owner: root
@@ -80,7 +72,6 @@
   file:
     path: /tmp/reviewboard.exp
     state: absent
-
 
 - name: copy reviewboard's configuration file
   copy:
@@ -112,33 +103,6 @@
     regexp: '^ALLOWED_HOSTS'
     line: "ALLOWED_HOSTS = ['*']"
     state: present
- 
-- name: Setting rc.local
-  file:
-    path: /etc/rc.local
-    state: touch
-    mode: 0750
-
-- name: Write rc.local
-  shell: echo "#!/bin/bash" > /etc/rc.local
-
-- name: restart rc.local
-  service: name=rc.local state=restarted enabled=yes
-
-
-- name: Databases Random Password
-  copy: 
-    src: init.sh
-    dest: /root/
-    mode: 0750
-
-- name: Setting Startup
-  lineinfile:
-    path: /etc/rc.local
-    regexp: '/root/init.sh'
-    line: '/root/init.sh'
-    mode: 0750
-
 
 - name: Change directory's permission
   shell: |

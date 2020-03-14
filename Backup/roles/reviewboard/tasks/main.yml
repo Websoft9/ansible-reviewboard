@@ -1,0 +1,149 @@
+- name: Install 
+  apt:
+    name: [python-pip, libapache2-mod-wsgi]
+    state: latest
+
+- name: enable apache mod
+  apache2_module:
+    state: present
+    name: wsgi
+   
+- name: Install dependence, memcached
+  apt:
+    name: [build-essential, python-dev, libffi-dev, libssl-dev, patch, memcached, libmysqlclient-dev]
+    state: latest
+
+- name: pip upgrade 
+  shell: pip install --upgrade pip
+
+- name: Install setuptools python-memcached, ReviewBoard
+  pip:
+    name: [setuptools, python-memcached, ReviewBoard, mysql-python]
+    state: present
+    extra_args: '-U'
+
+
+- name: Install other necesassary soft
+  apt:
+    name: [cvs, git-core, subversion, python-svn]
+
+- name: Install mercurial
+  shell: pip install -U mercurial
+
+- name: helix-p4d
+  shell: wget -qO - https://package.perforce.com/perforce.pubkey | sudo apt-key add -
+
+- name: copy helix-p4d repo
+  template:
+    src: perforce.list
+    dest: /etc/apt/sources.list.d/
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install helix-p4d
+  apt:
+    name: helix-p4d
+    state: latest
+    update-cache: yes
+
+- name: Install p4python
+  pip:
+    name: p4python
+    state: latest
+
+- name: Install python-subvertpy & python-svn
+  apt: 
+    name: [subversion, python-svn]
+    state: latest
+
+- name: Create database
+  mysql_db:
+    name: reviewboard
+    state: present
+    login_user: root
+    login_password: 123456
+
+
+- name: create expect script
+  copy:
+    src: reviewboard.exp
+    dest: /tmp/reviewboard.exp
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Create reviewboard site
+  shell: expect /tmp/reviewboard.exp
+
+- name: delete reviewboard.exp
+  file:
+    path: /tmp/reviewboard.exp
+    state: absent
+
+
+- name: copy reviewboard's configuration file
+  copy:
+    src: 000-default.conf
+    dest: /etc/apache2/sites-available
+
+- name: Update cryptography
+  pip:
+    name: cryptography
+    extra_args: '-U'
+
+- name: restart apache2
+  service:
+    name: apache2
+    state: restarted
+    enabled: yes
+
+- name: Change owner and group
+  file:
+    path: /data/wwwroot/
+    owner: www-data
+    group: www-data
+    recurse: yes
+    state: directory
+
+- name: copy reviewboard's configuration file -2
+  lineinfile:
+    path: /data/wwwroot/reviewboard/conf/settings_local.py
+    regexp: '^ALLOWED_HOSTS'
+    line: "ALLOWED_HOSTS = ['*']"
+    state: present
+ 
+- name: Setting rc.local
+  file:
+    path: /etc/rc.local
+    state: touch
+    mode: 0750
+
+- name: Write rc.local
+  shell: echo "#!/bin/bash" > /etc/rc.local
+
+- name: restart rc.local
+  service: name=rc.local state=restarted enabled=yes
+
+
+- name: Databases Random Password
+  copy: 
+    src: init.sh
+    dest: /root/
+    mode: 0750
+
+- name: Setting Startup
+  lineinfile:
+    path: /etc/rc.local
+    regexp: '/root/init.sh'
+    line: '/root/init.sh'
+    mode: 0750
+
+
+- name: Change directory's permission
+  shell: |
+    chown -R www-data /data/wwwroot/reviewboard/htdocs/media/uploaded
+    chown -R www-data /data/wwwroot/reviewboard/data
+    find /data/wwwroot/ -type d -exec chmod 750 {} \;
+    find /data/wwwroot/ -type f -exec chmod 640 {} \;
+
